@@ -2,7 +2,7 @@
 
 ### example
 
-- mongodb://<USERNAME>:<PASSWORD>@<MONGO-SERVICE>:<PORT>/<DATABASE>
+- mongodb://USERNAME:PASSWORD@MONGO-SERVICE:PORT/DATABASE
 
 | name | description |
 |------|-------------|
