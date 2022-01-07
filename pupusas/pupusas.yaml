@@ -1,0 +1,86 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pupusas-deployment
+  labels:
+    app: pupusas
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pupusas
+  template:
+    metadata:
+      labels:
+        app: pupusas
+    spec:
+      containers:
+        - name: pupusas
+          image: redesiham/pupusas:2.0.0
+          ports:
+            - containerPort: 5000
+          env:
+          - name: MONGO_URI
+            valueFrom:
+              secretKeyRef:
+                name: pupusas-secret
+                key: mongo_uri
+          - name: PORT
+            valueFrom:
+              secretKeyRef:
+                name: pupusas-secret
+                key: port
+          - name: SALT
+            valueFrom:
+              secretKeyRef:
+                name: pupusas-secret
+                key: salt
+          - name: TOKEN_LOGIN_KEY
+            valueFrom:
+              secretKeyRef:
+                name: pupusas-secret
+                key: token_login_key
+          - name: TOKEN_LOGIN_HEADER
+            valueFrom:
+              secretKeyRef:
+                name: pupusas-secret
+                key: token_login_header
+          - name: TOKEN_REGISTER_KEY
+            valueFrom:
+              secretKeyRef:
+                name: pupusas-secret
+                key: token_register_key
+          - name: RESET_PASSWORD_HEADER
+            valueFrom:
+              secretKeyRef:
+                name: pupusas-secret
+                key: reset_password_header
+          - name: USER_ROLE
+            valueFrom:
+              secretKeyRef:
+                name: pupusas-secret
+                key: user_role
+          - name: ADMIN_ROLE
+            valueFrom:
+              secretKeyRef:
+                name: pupusas-secret
+                key: admin_role
+          - name: ROLE_KEY
+            valueFrom:
+              secretKeyRef:
+                name: pupusas-secret
+                key: role_key
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pupusas-service
+spec:
+  selector:
+    app: pupusas
+  type: LoadBalancer
+  ports:
+    - protocol: TCP
+      port: 5000
+      targetPort: 5000
+      nodePort: 30001

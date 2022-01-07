@@ -1,0 +1,107 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: essteam-deployment
+  labels:
+    app: essteam
+spec:
+  replicas: 1
+  selector: 
+    matchLabels: 
+      app: essteam
+  template:
+    metadata:
+      labels:
+        app: essteam
+    spec:
+      containers:
+        - name: essteam
+          image: redesiham/essteam:1.0.0
+          ports: 
+            - containerPort: 8080
+          env:
+          - name: MONGO_URI
+            valueFrom:
+              secretKeyRef:
+                name: essteam-secret
+                key: mongo_uri
+          - name: PORT
+            valueFrom:
+              secretKeyRef:
+                name: essteam-secret
+                key: port
+          - name: SALT
+            valueFrom:
+              secretKeyRef:
+                name: essteam-secret
+                key: salt
+          - name: TOKEN_LOGIN_KEY
+            valueFrom:
+              secretKeyRef:
+                name: essteam-secret
+                key: token_login_key
+          - name: TOKEN_LOGIN_HEADER
+            valueFrom:
+              secretKeyRef:
+                name: essteam-secret
+                key: token_login_header
+          - name: TOKEN_RESET_PASSWORD_KEY
+            valueFrom:
+              secretKeyRef:
+                name: essteam-secret
+                key: token_reset_password_key
+          - name: TOKEN_REGISTER_KEY
+            valueFrom:
+              secretKeyRef:
+                name: essteam-secret
+                key: token_register_key
+          - name: RESET_PASSWORD_HEADER
+            valueFrom:
+              secretKeyRef:
+                name: essteam-secret
+                key: reset_password_header
+          - name: USER_ROLE
+            valueFrom:
+              secretKeyRef:
+                name: essteam-secret
+                key: user_role
+          - name: ADMIN_ROLE
+            valueFrom:
+              secretKeyRef:
+                name: essteam-secret
+                key: admin_role
+          - name: ROLE_KEY
+            valueFrom:
+              secretKeyRef:
+                name: essteam-secret
+                key: role_key
+          - name: PAYMENT_CLIENT
+            valueFrom:
+              secretKeyRef:
+                name: essteam-secret
+                key: payment_client
+          - name: PAYMENT_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: essteam-secret
+                key: payment_secret
+          - name: PAYMENT_SECRET_KEY
+            valueFrom:
+              secretKeyRef:
+                name: essteam-secret
+                key: payment_secret_key
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: essteam-service
+spec:
+  selector:
+    app: essteam
+  type: LoadBalancer
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+      nodePort: 30005
+
